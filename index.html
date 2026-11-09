@@ -1,1 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[Proto/.Xit#] · Crypto Arbitrage · Futures & Options Trading</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ---------- GLOBAL RESET & BASE ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Light theme glass */
+      --glass-bg: rgba(255, 255, 255, 0.55);
+      --glass-border: rgba(200, 215, 235, 0.7);
+      --glass-shadow: 0 8px 32px rgba(31, 55, 95, 0.08);
+      --accent: #2b7de0;
+      --accent-light: #5b9ef0;
+      --accent-glow: rgba(43, 125, 224, 0.25);
+      --text-dark: #1a2a44;
+      --text-muted: #4f6382;
+      --bg-light: #f2f7fe;
+      --bg-page: #e8f0fa;
+    }
+
+    html, body {
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-dark);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ---------- LIGHT ANIMATED BACKGROUND ---------- */
+    .bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: radial-gradient(circle at 20% 20%, #ffffff 0%, #e2edfc 70%, #d4e4f7 100%);
+    }
+
+    #blockchain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.5;
+    }
+
+    /* subtle glowing orbs — now soft blue/white */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    .orb-1 {
+      width: 600px;
+      height: 600px;
+      background: #b8d4f8;
+      top: -200px;
+      left: -150px;
+      animation: floatOrb 25s ease-in-out infinite;
+    }
+
+    .orb-2 {
+      width: 500px;
+      height: 500px;
+      background: #c6ddfa;
+      bottom: -150px;
+      right: -100px;
+      animation: floatOrb 30s ease-in-out infinite reverse;
+    }
+
+    .orb-3 {
+      width: 400px;
+      height: 400px;
+      background: #d6e6fd;
+      top: 40%;
+      left: 60%;
+      animation: floatOrb 35s ease-in-out infinite 5s;
+    }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(40px, -30px) scale(1.1); }
+      66% { transform: translate(-30px, 40px) scale(0.95); }
+    }
+
+    /* ---------- LAYOUT ---------- */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.2s ease, opacity 0.2s ease;
+    }
+
+    /* ---------- GLASS NAVIGATION (light) ---------- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 0;
+      margin-top: 1rem;
+      border-bottom: 1px solid rgba(160, 185, 215, 0.4);
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: -0.02em;
+      color: var(--text-dark);
+      cursor: pointer;
+      text-shadow: 0 2px 12px rgba(43, 125, 224, 0.12);
+    }
+
+    .logo span {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      align-items: center;
+    }
+
+    .nav-links a {
+      cursor: pointer;
+      padding: 0.4rem 0.9rem;
+      border-radius: 30px;
+      transition: color 0.2s, background 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--accent);
+      background: rgba(43, 125, 224, 0.1);
+      border-color: rgba(43, 125, 224, 0.2);
+    }
+
+    .btn-outline {
+      border: 1.5px solid rgba(43, 125, 224, 0.4);
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 0.55rem 1.5rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      cursor: pointer;
+      color: var(--accent);
+    }
+
+    .btn-outline:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    /* ---------- SHARED PAGE STYLES ---------- */
+    .page {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- HERO (Homepage) ---------- */
+    .hero {
+      padding: 4.5rem 0 3rem 0;
+    }
+
+    .hero h1 {
+      font-size: 4.8rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--text-dark);
+      max-width: 1000px;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 4px 30px rgba(43, 125, 224, 0.08);
+    }
+
+    .hero h1 .accent-text {
+      background: linear-gradient(135deg, #2b7de0, #5b9ef0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      max-width: 750px;
+      margin-bottom: 2.5rem;
+    }
+
+    .join-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #2b7de0, #1f6bc7);
+      color: white;
+      font-weight: 600;
+      font-size: 1.05rem;
+      padding: 0.9rem 2.6rem;
+      border-radius: 40px;
+      letter-spacing: -0.01em;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 30px rgba(43, 125, 224, 0.25);
+      cursor: pointer;
+      border: none;
+    }
+
+    .join-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(43, 125, 224, 0.35);
+    }
+
+    .join-btn i {
+      margin-left: 8px;
+      font-size: 0.9rem;
+    }
+
+    .commitment {
+      margin: 2.5rem 0 3rem 0;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(200, 215, 235, 0.8);
+      border-left: 3px solid var(--accent);
+      padding: 1.5rem 1.5rem 1.5rem 2rem;
+      border-radius: 0 16px 16px 0;
+      max-width: 900px;
+      box-shadow: var(--glass-shadow);
+    }
+
+    /* ---------- GLASS FEATURE GRID (light) ---------- */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.8rem;
+      margin: 3.5rem 0 4.5rem 0;
+    }
+
+    .feature-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 2rem 1.6rem;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s, background 0.25s;
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(31, 55, 95, 0.12), 0 0 30px rgba(43, 125, 224, 0.08);
+      border-color: rgba(43, 125, 224, 0.4);
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 0 12px var(--accent-glow));
+    }
+
+    .feature-card h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.9rem;
+      color: var(--text-dark);
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.4rem;
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-link {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      align-self: flex-start;
+      cursor: pointer;
+      transition: gap 0.2s, color 0.2s;
+    }
+
+    .card-link i {
+      font-size: 0.7rem;
+      transition: transform 0.2s;
+    }
+
+    .card-link:hover {
+      color: #1a6bc4;
+    }
+
+    .card-link:hover i {
+      transform: translateX(4px);
+    }
+
+    /* ---------- INNER PAGE HERO ---------- */
+    .page-hero {
+      padding: 3.5rem 0 2rem 0;
+    }
+
+    .page-hero h1 {
+      font-size: 3.6rem;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--text-dark);
+      margin-bottom: 1.25rem;
+      max-width: 900px;
+      text-shadow: 0 4px 30px rgba(43, 125, 224, 0.06);
+    }
+
+    .page-hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 750px;
+      margin-bottom: 2rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      background: rgba(43, 125, 224, 0.1);
+      padding: 0.35rem 0.9rem;
+      border-radius: 20px;
+      border: 1px solid rgba(43, 125, 224, 0.2);
+    }
+
+    /* ---------- SECTIONS ---------- */
+    .section {
+      padding: 3.5rem 0;
+    }
+
+    .section-alt {
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      padding: 3.5rem 0;
+    }
+
+    .section h2 {
+      font-size: 2.3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-dark);
+      margin-bottom: 1.5rem;
+    }
+
+    .section h2 + p.lead {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 800px;
+      margin-bottom: 2.5rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.8rem;
+      margin-top: 2rem;
+    }
+
+    .content-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.8rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      box-shadow: var(--glass-shadow);
+    }
+
+    .content-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(43, 125, 224, 0.35);
+      box-shadow: 0 16px 40px rgba(31, 55, 95, 0.1);
+    }
+
+    .content-card h3 {
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .content-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .content-card .card-icon {
+      margin-bottom: 1rem;
+      font-size: 1.75rem;
+    }
+
+    /* ---------- STATS ---------- */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.8rem;
+      margin: 2.5rem 0;
+    }
+
+    .stat {
+      text-align: left;
+      background: var(--glass-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 1.5rem 1.5rem 1.5rem 1.8rem;
+      border-left: 3px solid var(--accent);
+      box-shadow: var(--glass-shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 35px rgba(31, 55, 95, 0.1);
+    }
+
+    .stat-num {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      text-shadow: 0 2px 15px rgba(43, 125, 224, 0.1);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ---------- STYLED LIST ---------- */
+    .styled-list {
+      list-style: none;
+      margin: 1.5rem 0;
+    }
+
+    .styled-list li {
+      padding: 0.7rem 0 0.7rem 1.75rem;
+      position: relative;
+      color: var(--text-muted);
+      font-size: 1rem;
+      border-bottom: 1px solid rgba(160, 185, 215, 0.35);
+    }
+
+    .styled-list li::before {
+      content: "›";
+      position: absolute;
+      left: 0;
+      top: 0.6rem;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    /* ---------- TEAM ---------- */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.8rem;
+      margin-top: 2.5rem;
+    }
+
+    .team-member {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 1.8rem 1.5rem;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      box-shadow: var(--glass-shadow);
+    }
+
+    .team-member:hover {
+      transform: translateY(-4px);
+      border-color: rgba(43, 125, 224, 0.35);
+      box-shadow: 0 16px 40px rgba(31, 55, 95, 0.1);
+    }
+
+    .avatar {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1f6bc7, #5b9ef0);
+      margin: 0 auto 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      box-shadow: 0 0 25px rgba(43, 125, 224, 0.25);
+      border: 2px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .team-member h4 {
+      font-size: 1.1rem;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .team-member .role {
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+
+    .team-member p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* ---------- ARTICLE LIST ---------- */
+    .article-list {
+      margin: 2rem 0;
+    }
+
+    .article-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid rgba(160, 185, 215, 0.35);
+      gap: 2rem;
+      transition: padding-left 0.2s, background 0.2s;
+    }
+
+    .article-item:hover {
+      padding-left: 8px;
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .article-item h3 {
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .article-item p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      max-width: 700px;
+    }
+
+    .article-meta {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+      white-space: nowrap;
+      background: rgba(43, 125, 224, 0.08);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      border: 1px solid rgba(43, 125, 224, 0.15);
+    }
+
+    /* ---------- JOB LIST ---------- */
+    .job-list {
+      margin: 2rem 0;
+    }
+
+    .job-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid rgba(160, 185, 215, 0.35);
+      gap: 2rem;
+      transition: padding-left 0.2s, background 0.2s;
+    }
+
+    .job-item:hover {
+      padding-left: 8px;
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .job-item h3 {
+      font-size: 1.15rem;
+      color: var(--text-dark);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .job-item p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .job-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(43, 125, 224, 0.08);
+      border: 1px solid rgba(43, 125, 224, 0.2);
+      padding: 0.35rem 0.9rem;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* ---------- CTA BAND (light glass) ---------- */
+    .cta-band {
+      background: linear-gradient(135deg, rgba(43, 125, 224, 0.12), rgba(160, 200, 250, 0.18));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(200, 220, 245, 0.8);
+      color: var(--text-dark);
+      padding: 3.5rem 0;
+      margin: 3.5rem 0 0 0;
+      border-radius: 32px;
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-band::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 140%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(43, 125, 224, 0.06), transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta-band .container {
+      padding: 0 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-band h2 {
+      color: var(--text-dark);
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-band p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin-bottom: 2rem;
+    }
+
+    .cta-band .join-btn {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 8px 30px rgba(43, 125, 224, 0.25);
+    }
+
+    .cta-band .join-btn:hover {
+      background: #1f6bc7;
+      box-shadow: 0 12px 40px rgba(43, 125, 224, 0.35);
+    }
+
+    /* ---------- CONTACT LINKS ---------- */
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin-top: 2rem;
+    }
+
+    .contact-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      padding: 0.8rem 1.6rem;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: var(--glass-shadow);
+      cursor: pointer;
+    }
+
+    .contact-links a:hover {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(43, 125, 224, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(31, 55, 95, 0.1);
+      color: var(--accent);
+    }
+
+    .contact-links a i {
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+
+    /* ---------- LEGAL CONTENT & EMAIL (contact page) ---------- */
+    .legal-content {
+      max-width: 820px;
+    }
+
+    .legal-content h2 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .legal-content h2:first-child {
+      margin-top: 0;
+    }
+
+    .legal-content p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+
+    .legal-content p a {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: underline;
+      text-decoration-color: rgba(43, 125, 224, 0.35);
+      text-underline-offset: 3px;
+    }
+
+    .legal-content p a:hover {
+      color: #1a6bc4;
+      text-decoration-color: var(--accent);
+    }
+
+    .contact-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.9rem;
+      margin-top: 0.5rem;
+      padding: 1rem 2rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--glass-border);
+      border-left: 3px solid var(--accent);
+      border-radius: 16px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      box-shadow: var(--glass-shadow);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s;
+    }
+
+    .contact-email i {
+      font-size: 1.3rem;
+      color: var(--accent);
+      filter: drop-shadow(0 0 8px var(--accent-glow));
+    }
+
+    .contact-email:hover {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(43, 125, 224, 0.4);
+      color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(31, 55, 95, 0.1);
+    }
+
+    /* ---------- FOOTER ---------- */
+    .footer {
+      border-top: 1px solid rgba(160, 185, 215, 0.4);
+      padding: 2.5rem 0;
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-links a {
+      cursor: pointer;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1024px) {
+      .hero h1 { font-size: 3.6rem; }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .three-col { grid-template-columns: repeat(2, 1fr); }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .page-hero h1 { font-size: 2.8rem; }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+        padding: 1.2rem 0;
+      }
+      .nav-links {
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        font-size: 0.88rem;
+        width: 100%;
+      }
+      .nav-links a {
+        padding: 0.35rem 0.7rem;
+      }
+      .hero { padding: 3rem 0 2rem 0; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero-sub { font-size: 1.1rem; }
+      .feature-grid,
+      .two-col,
+      .three-col,
+      .team-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .commitment { font-size: 0.95rem; padding: 1.2rem; }
+      .footer { flex-direction: column; gap: 1rem; text-align: center; }
+      .article-item,
+      .job-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+      }
+      .cta-band .container { padding: 0 1.8rem; }
+      .cta-band h2 { font-size: 1.7rem; }
+      .page-hero h1 { font-size: 2.1rem; }
+      .page-hero p { font-size: 1.05rem; }
+      .section h2 { font-size: 1.8rem; }
+      .contact-links a { font-size: 0.88rem; padding: 0.6rem 1.2rem; }
+      .legal-content h2 { font-size: 1.6rem; }
+      .legal-content p { font-size: 0.98rem; }
+      .contact-email { font-size: 1rem; padding: 0.85rem 1.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 1.2rem; }
+      .hero h1 { font-size: 2rem; }
+      .join-btn { padding: 0.75rem 1.8rem; font-size: 0.95rem; }
+      .logo { font-size: 1.5rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .stat-num { font-size: 2rem; }
+      .page-hero h1 { font-size: 1.8rem; }
+      .eyebrow { font-size: 0.7rem; }
+      .btn-outline { padding: 0.45rem 1.2rem; font-size: 0.85rem; }
+      .contact-email { font-size: 0.92rem; padding: 0.75rem 1.2rem; gap: 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated blockchain background canvas -->
+  <canvas id="blockchain"></canvas>
+  <div class="bg-canvas"></div>
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+
+  <div class="container">
+    <!-- ---------- NAVIGATION ---------- -->
+    <header class="navbar">
+      <a href="#" class="logo" data-page="home">[Proto/.Xit#]</a>
+      <nav class="nav-links">
+        <a data-page="what-we-do">What we do</a>
+        <a data-page="people-culture">People & culture</a>
+        <a data-page="technology">Technology</a>
+        <a data-page="insights">Insights</a>
+        <a data-page="join" class="btn-outline">Join us</a>
+      </nav>
+    </header>
+
+    <!-- ========== PAGE: HOME ========== -->
+    <main id="page-home" class="page active">
+      <section class="hero">
+        <h1>SOLVING THE PUZZLE<br>OF <span class="accent-text">CRYPTO MARKETS</span></h1>
+        <p class="hero-sub">[Proto/.Xit#] is a research-driven crypto quant trading firm specializing in arbitrage, futures, and options — where curious people work together on deep [Proto/.Xit#]blems.</p>
+        <a class="join-btn" data-page="join">Join us <i class="fas fa-arrow-right"></i></a>
+      </section>
+
+      <div class="commitment">
+        <i class="fas fa-circle" style="font-size: 0.55rem; color: var(--accent); margin-right: 10px; vertical-align: middle;"></i>
+        We commit our capital, global reach, blockchain infrastructure, and expertise to help institutions and [Proto/.Xit#]cols meet their trading goals.
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-icon"><i class="fas fa-robot"></i></div>
+          <h3>Machine learning at [Proto/.Xit#]</h3>
+          <p>We believe deep learning is the future of quantitative crypto trading. Our models uncover signals in vast, noisy on-chain and market datasets.</p>
+          <a class="card-link" data-page="technology">Learn more <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon"><i class="fas fa-users"></i></div>
+          <h3>Our people, our culture</h3>
+          <p>Discover who we are, and how we collaborate. We build small, autonomous teams that own [Proto/.Xit#]blems end-to-end.</p>
+          <a class="card-link" data-page="people-culture">Learn more <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon"><i class="fas fa-cubes"></i></div>
+          <h3>Blockchain to the core</h3>
+          <p>We build low-latency trading systems, on-chain analytics, and cross-venue arbitrage infrastructure that power global crypto markets.</p>
+          <a class="card-link" data-page="technology">Learn more <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon"><i class="fas fa-chart-pie"></i></div>
+          <h3>Futures & options expertise</h3>
+          <p>Deep liquidity across perpetuals, dated futures, and options — with sophisticated pricing and risk models.</p>
+          <a class="card-link" data-page="what-we-do">Learn more <i class="fas fa-chevron-right"></i></a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== PAGE: WHAT WE DO ========== -->
+    <main id="page-what-we-do" class="page">
+      <section class="page-hero">
+        <span class="eyebrow">What we do</span>
+        <h1>Crypto arbitrage, futures & options at global scale</h1>
+        <p>[Proto/.Xit#] is a global crypto quant trading firm [Proto/.Xit#]viding liquidity across spot, futures, and options markets. We combine rigorous quantitative research, low-latency infrastructure, and disciplined risk management to solve [Proto/.Xit#]blems in crypto markets around the clock.</p>
+      </section>
+
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-num">60+</div>
+          <div class="stat-label">Crypto venues integrated</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">$100M+</div>
+          <div class="stat-label">Average daily volume</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">24/7</div>
+          <div class="stat-label">Market coverage</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">150+</div>
+          <div class="stat-label">Trading pairs</div>
+        </div>
+      </div>
+
+      <section class="section-alt">
+        <div class="container">
+          <h2>Our aproch to crypto markets</h2>
+          <p class="lead">We operate across the full crypto derivatives stack — from cross-exchange arbitrage to sophisticated options market making.</p>
+          <div class="three-col">
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-exchange-alt"></i></div>
+              <h3>Arbitrage strategies <span style="font-size: 0.7rem; font-weight: 500; color: var(--accent); margin-left: 0.5rem; letter-spacing: 0.05em; opacity: 0.85;">TRADING</span></h3>
+              <p>Cross-venue, triangular, and statistical arbitrage across spot and derivatives markets — capturing inefficiencies at machine speed.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+              <h3>Futures & perpetuals <span style="font-size: 0.7rem; font-weight: 500; color: var(--accent); margin-left: 0.5rem; letter-spacing: 0.05em; opacity: 0.85;">TRADING</span></h3>
+              <p>Market making and basis trading across perpetual swaps, dated futures, and funding rate strategies.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-gem"></i></div>
+              <h3>Options market <span style="font-size: 0.7rem; font-weight: 500; color: var(--accent); margin-left: 0.5rem; letter-spacing: 0.05em; opacity: 0.85;">TRADING</span></h3>
+              <p>Quoting deep, competitive markets across crypto options with sophisticated volatility surface modeling and Greeks management.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="two-col">
+            <div>
+              <h2>Partnering with institutions & [Proto/.Xit#]cols</h2>
+              <p class="lead">We work with crypto funds, exchanges, DAOs, and traditional institutions entering digital assets.</p>
+              <ul class="styled-list">
+                <li>Dedicated coverage and tailored execution across venues</li>
+                <li>Deep liquidity in spot, futures, and options</li>
+                <li>Transparent pricing and on-chain settlement support</li>
+                <li>Flexible engagement models, from API to high-touch</li>
+              </ul>
+              <a class="join-btn" data-page="join">Work with us <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div>
+              <div class="content-card">
+                <h3>Global reach, 24/7 markets <span style="font-size: 0.7rem; font-weight: 500; color: var(--accent); margin-left: 0.5rem; letter-spacing: 0.05em; opacity: 0.85;">REMOTE WORK ONLY</span></h3>
+                <p>Our trading desks in New York, London, Singapore, and Dubai operate as one team, sharing research and infrastructure across every time zone — because crypto never sleeps.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cta-band">
+        <div class="container">
+          <h2>Curious how we think about crypto markets?</h2>
+          <p>Read the research and engineering ideas that drive our firm.</p>
+          <a class="join-btn" data-page="insights">Read insights <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== PAGE: PEOPLE & CULTURE ========== -->
+    <main id="page-people-culture" class="page">
+      <section class="page-hero">
+        <span class="eyebrow">People & culture</span>
+        <h1>Small teams. Big blems. No politics.</h1>
+        <p>At [Proto/.Xit#], we believe the best work happens when smart, curious people collaborate on [Proto/.Xit#]blems they genuinely care about. We keep teams small, decisions close to the work, and communication radically open.</p>
+      </section>
+
+      <section class="section-alt">
+        <div class="container">
+          <h2>What it feels like to work here</h2>
+          <div class="three-col">
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-comments"></i></div>
+              <h3>Open by default</h3>
+              <p>Most conversations, documents, and strategies are visible to everyone. We hire people we trust, then trust them.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-puzzle-piece"></i></div>
+              <h3>Blems over titles</h3>
+              <p>Good ideas win regardless of seniority. We care about the quality of the thinking, not the rank of the thinker.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
+              <h3>Learn relentlessly</h3>
+              <p>We run internal classes, reading groups, and mentorship [Proto/.Xit#]grams. Curiosity is a core job requirement.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-hands-helping"></i></div>
+              <h3>Collaborate genuinely</h3>
+              <p>Trading, research, and engineering sit side by side. The best solutions come from mixing perspectives.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-balance-scale"></i></div>
+              <h3>Own the outcome</h3>
+              <p>Teams own their [Proto/.Xit#]blems end-to-end — from research question to [Proto/.Xit#]duction system to market impact.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-smile"></i></div>
+              <h3>Low ego, high standards</h3>
+              <p>We laugh easily, challenge each other rigorously, and celebrate wins as a team.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <h2>Leadership</h2>
+          <p class="lead">A leadership team that stays close to the work.</p>
+          <div class="team-grid">
+            <div class="team-member">
+              <div class="avatar">MR</div>
+              <h4>Samuel.J Greenberg</h4>
+              <div class="role">Chief Executive Officer</div>
+              <p>Former quant researcher; 18 years building trading systems across equities, derivatives, and crypto.</p>
+            </div>
+            <div class="team-member">
+              <div class="avatar">DK</div>
+              <h4>Daniel Kwon</h4>
+              <div class="role">Chief Technology Officer</div>
+              <p>Compiler engineer turned trading technologist. Believes latency is a feature, not a bug.</p>
+            </div>
+            <div class="team-member">
+              <div class="avatar">AS</div>
+              <h4>Amara Silva</h4>
+              <div class="role">Head of Research</div>
+              <p>Machine learning specialist focused on signal discovery in noisy, high-dimensional on-chain data.</p>
+            </div>
+            <div class="team-member">
+              <div class="avatar">JT</div>
+              <h4>Jonas Thorne</h4>
+              <div class="role">Head of Trading</div>
+              <p>Two decades of market-making experience across fixed income, FX, and crypto derivatives.</p>
+            </div>
+            <div class="team-member">
+              <div class="avatar">LP</div>
+              <h4>Lena Park</h4>
+              <div class="role">Head of People</div>
+              <p>Builds teams that are as kind as they are sharp. Champion of radical transparency.</p>
+            </div>
+            <div class="team-member">
+              <div class="avatar">RC</div>
+              <h4>Rafael Costa</h4>
+              <div class="role">Head of Risk</div>
+              <p>Thinks in tail scenarios. Keeps the firm honest about what could go wrong on-chain and off.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cta-band">
+        <div class="container">
+          <h2>Think you'd fit in?</h2>
+          <p>We're always looking for curious people who love hard [Proto/.Xit#]blems.</p>
+          <a class="join-btn" data-page="join">See open roles <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== PAGE: TECHNOLOGY ========== -->
+    <main id="page-technology" class="page">
+      <section class="page-hero">
+        <span class="eyebrow">Technology</span>
+        <h1>Technical to the core</h1>
+        <p>Technology isn't a support function at [Proto/.Xit#] — it's the foundation of everything we do. We build low-latency networks, on-chain analytics pipelines, and distributed systems that power global crypto trading.</p>
+      </section>
+
+      <section class="section-alt">
+        <div class="container">
+          <h2>Every layer of the stack</h2>
+          <p class="lead">Our engineers work across the entire technology stack — from bare metal to on-chain.</p>
+          <div class="three-col">
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-microchip"></i></div>
+              <h3>Low-latency systems</h3>
+              <p>Custom kernels, kernel-bypass networking, and colocated infrastructure. Every microsecond is a design decision in crypto.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-link"></i></div>
+              <h3>Blockchain infrastructure</h3>
+              <p>Validator nodes, mempool monitoring, and on-chain data pipelines across major L1s and L2s.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-robot"></i></div>
+              <h3>Machine learning platform</h3>
+              <p>End-to-end ML tooling: feature stores, training pipelines, model serving, and continuous monitoring in [Proto/.Xit#]duction.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-database"></i></div>
+              <h3>Data engineering</h3>
+              <p>Petabyte-scale storage and query systems for market data, on-chain events, and order-book snapshots.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-cogs"></i></div>
+              <h3>Smart contract & [Proto/.Xit#]col research</h3>
+              <p>We study and interact with DeFi [Proto/.Xit#]cols, contributing to and building our own on-chain tooling.</p>
+            </div>
+            <div class="content-card">
+              <div class="card-icon"><i class="fas fa-lock"></i></div>
+              <h3>Security & reliability</h3>
+              <p>Zero-trust architecture, encrypted everything, and rigorous incident response — because trust is earned daily.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="two-col">
+            <div>
+              <h2>Machine learning at [Proto/.Xit#]</h2>
+              <p class="lead">We believe deep learning is the future of quantitative crypto trading. Our ML researchers and engineers work shoulder-to-shoulder to turn research into [Proto/.Xit#]duction systems.</p>
+              <ul class="styled-list">
+                <li>Custom deep learning architectures for high-frequency crypto data</li>
+                <li>Reinforcement learning for optimal execution and market making</li>
+                <li>On-chain feature engineering and mempool signal extraction</li>
+                <li>Continuous retraining pipelines that adapt to regime shifts</li>
+              </ul>
+              <a class="join-btn" data-page="insights">Read ML insights <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div>
+              <div class="content-card">
+                <h3>Open-source & research</h3>
+                <p>We believe in contributing back. Our engineers publish papers, speak at conferences, and maintain open-source [Proto/.Xit#]jects in areas ranging from data validation to high-performance networking and on-chain analytics.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cta-band">
+        <div class="container">
+          <h2>Engineers wanted</h2>
+          <p>If you love hard [Proto/.Xit#]blems and low-level details, we want to talk.</p>
+          <a class="join-btn" data-page="join">View engineering roles <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== PAGE: INSIGHTS ========== -->
+    <main id="page-insights" class="page">
+      <section class="page-hero">
+        <span class="eyebrow">Insights</span>
+        <h1>See the thinking behind our work</h1>
+        <p>In-depth discussions of every layer of the stack — from research to engineering to the culture that ties it all together.</p>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <h2>Latest articles</h2>
+          <div class="article-list">
+            <div class="article-item">
+              <div>
+                <h3>Interpretable deep learning for crypto order-book forecasting</h3>
+                <p>How we balance model complexity with the need to understand why a model makes the trades it does.</p>
+              </div>
+              <div class="article-meta">Research · 12 min</div>
+            </div>
+            <div class="article-item">
+              <div>
+                <h3>Cross-venue arbitrage at machine speed</h3>
+                <p>Architecting a low-latency arbitrage system that captures mispricings across 60+ crypto venues.</p>
+              </div>
+              <div class="article-meta">Engineering · 9 min</div>
+            </div>
+            <div class="article-item">
+              <div>
+                <h3>What we learned rewriting our matching engine in Rust</h3>
+                <p>A retrospective on performance, safety, and developer happiness when moving from C++ to Rust.</p>
+              </div>
+              <div class="article-meta">Engineering · 15 min</div>
+            </div>
+            <div class="article-item">
+              <div>
+                <h3>Volatility surface modeling for crypto options</h3>
+                <p>Why crypto options require different models than traditional equities — and how we build ours.</p>
+              </div>
+              <div class="article-meta">Research · 10 min</div>
+            </div>
+            <div class="article-item">
+              <div>
+                <h3>How we run internal reading groups</h3>
+                <p>The culture mechanisms that keep a trading firm learning at startup speed.</p>
+              </div>
+              <div class="article-meta">Culture · 6 min</div>
+            </div>
+            <div class="article-item">
+              <div>
+                <h3>Kernel-bypass networking at 100Gbps and beyond</h3>
+                <p>Lessons from squeezing every microsecond out of our market data pipelines.</p>
+              </div>
+              <div class="article-meta">Infrastructure · 11 min</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-alt">
+        <div class="container">
+          <div class="two-col">
+            <div>
+              <h2>[Proto/.Xit#]/.Xit Engineering Blog</h2>
+              <p class="lead">We publish deep dives on systems, ML, and crypto market microstructure. No fluff — just the details that matter.</p>
+              <a class="card-link" data-page="join" style="margin-top: 0.5rem;">Subscribe to updates <i class="fas fa-chevron-right"></i></a>
+            </div>
+            <div>
+              <div class="content-card">
+                <h3>Writing at [Proto/.Xit#]</h3>
+                <p>Our researchers and engineers write openly about the [Proto/.Xit#]blems they solve — from latency-sensitive infrastructure to on-chain analytics and market microstructure research.</p>
+                <a class="card-link" data-page="join">Contribute a post <i class="fas fa-chevron-right"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cta-band">
+        <div class="container">
+          <h2>Want to write the next post?</h2>
+          <p>We're hiring researchers and engineers who love to explain their work.</p>
+          <a class="join-btn" data-page="join">See open roles <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== PAGE: JOIN US ========== -->
+    <main id="page-join" class="page">
+      <section class="page-hero">
+        <span class="eyebrow">Join us</span>
+        <h1>Work on [Proto/.Xit#]blems that don't have answers yet</h1>
+        <p>[Proto/.Xit#] is a place for people who like to figure things out. We hire across research, engineering, trading, and operations — and we're always looking for curious minds.</p>
+      </section>
+
+      <section class="section-alt">
+        <div class="container">
+          <h2>Open roles</h2>
+          <p class="lead">We hire year-round across our global offices. All roles are fictional, but the [Proto/.Xit#]blems are real.</p>
+          <div class="job-list">
+            <div class="job-item">
+              <div>
+                <h3>Crypto Quantitative Researcher</h3>
+                <p>New York · London · Singapore — PhD or equivalent research experience in ML, statistics, or physics.</p>
+              </div>
+              <span class="job-tag">Research</span>
+            </div>
+            <div class="job-item">
+              <div>
+                <h3>Low-Latency Software Engineer</h3>
+                <p>New York · Amsterdam — C++, Rust, or C experience; interest in networking, kernels, and performance.</p>
+              </div>
+              <span class="job-tag">Engineering</span>
+            </div>
+            <div class="job-item">
+              <div>
+                <h3>Machine Learning Engineer</h3>
+                <p>London · Singapore — [Proto/.Xit#]duction ML experience; comfortable with training, serving, and monitoring.</p>
+              </div>
+              <span class="job-tag">Engineering</span>
+            </div>
+            <div class="job-item">
+              <div>
+                <h3>Crypto Options Trader</h3>
+                <p>New York · Dubai — Options market-making experience, strong quantitative instincts, and intellectual humility.</p>
+              </div>
+              <span class="job-tag">Trading</span>
+            </div>
+            <div class="job-item">
+              <div>
+                <h3>Blockchain Data Engineer</h3>
+                <p>Amsterdam · Singapore — Distributed systems, on-chain data pipelines, and query engines at petabyte scale.</p>
+              </div>
+              <span class="job-tag">Engineering</span>
+            </div>
+            <div class="job-item">
+              <div>
+                <h3>Crypto Risk Analyst</h3>
+                <p>New York — Statistical modeling, scenario analysis, and a healthy respect for tail risk in digital assets.</p>
+              </div>
+              <span class="job-tag">Risk</span>
+            </div>
+            <div class="job-item">
+              <div>
+                <h3>People Operations Partner</h3>
+                <p>London — Help us scale culture without losing what makes it special.</p>
+              </div>
+              <span class="job-tag">Operations</span>
+            </div>
+            <div class="job-item">
+              <div>
+                <h3>Software Engineering Intern</h3>
+                <p>All offices — 12-week summer [Proto/.Xit#]gram for students who love building things in crypto.</p>
+              </div>
+              <span class="job-tag">Internship</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="two-col">
+            <div>
+              <h2>Our hiring philosophy</h2>
+              <p class="lead">We hire for curiosity, rigor, and collaboration — not just credentials.</p>
+              <ul class="styled-list">
+                <li>We look for people who ask better questions, not just give fast answers</li>
+                <li>We value depth in any field, not just crypto or finance</li>
+                <li>We believe diverse perspectives make better markets and better teams</li>
+                <li>We interview for how you think, not what you've memorized</li>
+              </ul>
+            </div>
+            <div>
+              <div class="content-card">
+                <h3>What to expect</h3>
+                <p>Our [Proto/.Xit#]cess is rigorous but human. You'll meet people you'd actually work with, solve [Proto/.Xit#]blems that resemble real work, and get honest feedback at every stage.</p>
+                <a class="card-link" data-page="people-culture">Read the full [Proto/.Xit#]cess <i class="fas fa-chevron-right"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cta-band">
+        <div class="container">
+          <h2>Don't see the right role?</h2>
+          <p>We're always open to exceptional people. Send us a note about what you'd love to work on.</p>
+          <a class="join-btn" data-page="join">Get in touch <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== PAGE: PRIVACY ========== -->
+    <main id="page-privacy" class="page">
+      <section class="page-hero">
+        <span class="eyebrow">Privacy</span>
+        <h1>Privacy Policy</h1>
+        <p>Last updated: January 2026. This policy explains how [Proto/.Xit#] collects, uses, and safeguards your information when you interact with our website and services.</p>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="content-card" style="max-width: 900px;">
+            <h3>1. Information we collect</h3>
+            <p>We may collect personal information you voluntarily [Proto/.Xit#]vide (such as name, email address, and company) when you contact us, apply for a role, or subscribe to updates. We also collect non-personal usage data — including browser type, device information, and pages visited — to im[Proto/.Xit#]ve our site and services.</p>
+
+            <h3 style="margin-top: 1.8rem;">2. How we use information</h3>
+            <p>We use the information we collect to respond to inquiries, [Proto/.Xit#]cess job applications, [Proto/.Xit#]vide updates you request, comply with legal obligations, and im[Proto/.Xit#]ve the performance and security of our website. We do not sell personal information.</p>
+
+            <h3 style="margin-top: 1.8rem;">3. Cookies & analytics</h3>
+            <p>Our site may use cookies and similar technologies for analytics and functionality. You can control cookies through your browser settings. We may use third-party analytics [Proto/.Xit#]viders that [Proto/.Xit#]cess aggregated, non-identifying data on our behalf.</p>
+
+            <h3 style="margin-top: 1.8rem;">4. Data sharing</h3>
+            <p>We may share information with trusted service [Proto/.Xit#]viders who assist us in operating our website and business, subject to confidentiality obligations. We may also disclose information when required by law or to [Proto/.Xit#]tect our rights and safety.</p>
+
+            <h3 style="margin-top: 1.8rem;">5. Data security & retention</h3>
+            <p>We apply reasonable technical and organizational measures to [Proto/.Xit#]tect personal information. We retain information only as long as necessary for the purposes described in this policy or as required by law.</p>
+
+            <h3 style="margin-top: 1.8rem;">6. Your rights</h3>
+            <p>Depending on your jurisdiction, you may have the right to access, correct, or delete your personal information, or to object to certain [Proto/.Xit#]cessing. To exercise these rights, please contact us using the details on our Contact page.</p>
+
+            <h3 style="margin-top: 1.8rem;">7. Changes to this policy</h3>
+            <p>We may update this policy from time to time. Material changes will be reflected on this page with an updated effective date. Continued use of our website after changes indicates acceptance of the updated policy.</p>
+
+            <h3 style="margin-top: 1.8rem;">8. Contact</h3>
+            <p>If you have questions about this Privacy Policy, please reach out through our <a class="card-link" data-page="contact" style="font-size: 0.95rem;">Contact page <i class="fas fa-chevron-right"></i></a>.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ========== PAGE: TERMS ========== -->
+    <main id="page-terms" class="page">
+      <section class="page-hero">
+        <span class="eyebrow">Terms</span>
+        <h1>Terms of Use</h1>
+        <p>Last updated: January 2026. Please read these terms carefully before using the [Proto/.Xit#] website.</p>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="content-card" style="max-width: 900px;">
+            <h3>1. Acceptance of terms</h3>
+            <p>By accessing or using the [Proto/.Xit#] website, you agree to be bound by these Terms of Use and all applicable laws and regulations. If you do not agree with these terms, please do not use the site.</p>
+
+            <h3 style="margin-top: 1.8rem;">2. Use of the site</h3>
+            <p>You may use this site for lawful, informational purposes only. You agree not to interfere with the site's operation, attempt unauthorized access, or use the site in a way that could damage, disable, or impair it.</p>
+
+            <h3 style="margin-top: 1.8rem;">3. Intellectual [Proto/.Xit#]perty</h3>
+            <p>All content on this site — including text, graphics, logos, and code — is owned by or licensed to [Proto/.Xit#] and [Proto/.Xit#]tected by applicable intellectual [Proto/.Xit#]perty laws. You may not re[Proto/.Xit#]duce, distribute, or create derivative works without our prior written consent.</p>
+
+            <h3 style="margin-top: 1.8rem;">4. No financial advice</h3>
+            <p>Information on this site is [Proto/.Xit#]vided for general informational purposes and does not constitute investment, financial, legal, or tax advice. Nothing on this site should be relied upon as a recommendation to buy, sell, or hold any asset.</p>
+
+            <h3 style="margin-top: 1.8rem;">5. Third-party links</h3>
+            <p>Our site may contain links to third-party websites and services. We are not responsible for the content, policies, or practices of those third parties, and you access them at your own risk.</p>
+
+            <h3 style="margin-top: 1.8rem;">6. Disclaimer of warranties</h3>
+            <p>The site is [Proto/.Xit#]vided "as is" and "as available" without warranties of any kind, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement.</p>
+
+            <h3 style="margin-top: 1.8rem;">7. Limitation of liability</h3>
+            <p>To the maximum extent permitted by law, [Proto/.Xit#] shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the site or reliance on its content.</p>
+
+            <h3 style="margin-top: 1.8rem;">8. Governing law</h3>
+            <p>These terms are governed by the laws applicable in the jurisdictions where [Proto/.Xit#] operates, without regard to conflict-of-law principles. Any disputes shall be resolved in the ap[Proto/.Xit#]priate courts of those jurisdictions.</p>
+
+            <h3 style="margin-top: 1.8rem;">9. Changes to terms</h3>
+            <p>We may revise these Terms of Use at any time. Updated terms will be posted on this page with a new effective date. Your continued use of the site constitutes acceptance of the revised terms.</p>
+
+            <h3 style="margin-top: 1.8rem;">10. Contact</h3>
+            <p>For questions about these Terms, please visit our <a class="card-link" data-page="contact" style="font-size: 0.95rem;">Contact page <i class="fas fa-chevron-right"></i></a>.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ========== PAGE: CONTACT ========== -->
+    <main id="page-contact" class="page">
+      <section class="page-hero">
+        <span class="eyebrow">Contact</span>
+        <h1>Get in touch</h1>
+        <p>Whether you're an institution exploring liquidity, a researcher with a question, or a curious mind looking to join us — we'd love to hear from you.</p>
+      </section>
+
+      <section class="section-alt">
+        <div class="container">
+          <div class="two-col">
+            <div>
+              <h2>Reach out</h2>
+              <p class="lead">Our team operates across time zones and responds as quickly as we can. For general inquiries, partnerships, or press, use the links below to connect with us on the platforms where we're most active.</p>
+              <ul class="styled-list">
+                <li>Institutional & partnership inquiries</li>
+                <li>Careers and recruiting questions</li>
+                <li>Research collaborations</li>
+                <li>Press and media requests</li>
+              </ul>
+              <div class="contact-links">
+                <a href="https://www.f6s.com" target="_blank" rel="noopener noreferrer">
+                  <i class="fas fa-rocket"></i> F6S
+                </a>
+                <a href="https://www.crunchbase.com" target="_blank" rel="noopener noreferrer">
+                  <i class="fas fa-building"></i> Crunchbase
+                </a>
+                <a href="https://wellfound.com" target="_blank" rel="noopener noreferrer">
+                  <i class="fas fa-handshake"></i> Wellfound
+                </a>
+                <a href="https://theorg.com" target="_blank" rel="noopener noreferrer">
+                  <i class="fas fa-sitemap"></i> TheOrg
+                </a>
+                <a href="https://ensun.io" target="_blank" rel="noopener noreferrer">
+                  <i class="fas fa-search"></i> ENSUN
+                </a>
+              </div>
+            </div>
+            <div>
+              <div class="content-card">
+                <h3>Where we are</h3>
+                <p style="margin-bottom: 1rem;">Our trading desks operate as one global team across:</p>
+                <ul class="styled-list" style="margin-top: 0.5rem;">
+                  <li>New York, USA</li>
+                  <li>London, UK</li>
+                  <li>Singapore</li>
+                  <li>Dubai, UAE</li>
+                  <li>Amsterdam, Netherlands</li>
+                </ul>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);">Crypto never sleeps — and neither does our coverage.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="legal-content">
+            <h2>Email us</h2>
+            <p>For general inquiries, partnerships, or press, reach us at the address below. We read every message and aim to respond within a few business days.</p>
+            <a href="mailto:team@protoxit.com" class="contact-email">
+              <i class="fas fa-envelope"></i> team@protoxit.com
+            </a>
+              <a href="mailto:team@protoxit.com" class="contact-email">
+              <i class="fas fa-envelope"></i> Protoxit@protonmail.com
+            </a>
+
+            <h2>Other contacts</h2>
+            <p>For privacy-related requests, email <a href="mailto:privacy@protoxit.com">privacy@protoxit.com</a>. For legal matters, email <a href="mailto:legal@protoxit.com">legal@protoxit.com</a>. For careers, see our <a href="#" data-page="join">open roles</a> or email <a href="mailto:careers@protoxit.com">careers@protoxit.com</a>.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="cta-band">
+        <div class="container">
+          <h2>Looking for something else?</h2>
+          <p>Explore open roles or read our latest research to learn more about [Proto/.Xit#].</p>
+          <a class="join-btn" data-page="join">See open roles <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ---------- FOOTER ---------- -->
+    <footer class="footer">
+      <div>© 2026 [Proto/.Xit#].</div>
+      <div class="footer-links">
+        <a data-page="privacy">Privacy</a>
+        <a data-page="terms">Terms</a>
+        <a data-page="contact">Contact</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    /* ---------- PAGE SWITCHING ---------- */
+    (function() {
+      const pages = {
+        'home': document.getElementById('page-home'),
+        'what-we-do': document.getElementById('page-what-we-do'),
+        'people-culture': document.getElementById('page-people-culture'),
+        'technology': document.getElementById('page-technology'),
+        'insights': document.getElementById('page-insights'),
+        'join': document.getElementById('page-join'),
+        'privacy': document.getElementById('page-privacy'),
+        'terms': document.getElementById('page-terms'),
+        'contact': document.getElementById('page-contact')
+      };
+
+      const navLinks = document.querySelectorAll('[data-page]');
+
+      function showPage(pageId) {
+        Object.values(pages).forEach(page => {
+          if (page) page.classList.remove('active');
+        });
+
+        if (pages[pageId]) {
+          pages[pageId].classList.add('active');
+        }
+
+        navLinks.forEach(link => {
+          if (link.classList.contains('btn-outline')) return;
+          link.classList.toggle('active', link.getAttribute('data-page') === pageId);
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const pageId = this.getAttribute('data-page');
+          if (pageId && pages[pageId]) {
+            showPage(pageId);
+          }
+        });
+      });
+
+      showPage('home');
+    })();
+
+    /* ---------- LIGHT BLOCKCHAIN ANIMATED BACKGROUND ---------- */
+    (function() {
+      const canvas = document.getElementById('blockchain');
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let nodes = [];
+      const NODE_COUNT = 60;
+      const MAX_DIST = 160;
+      /* Soft blue for light theme */
+      const ACCENT = '43, 125, 224';
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initNodes();
+      }
+
+      function initNodes() {
+        nodes = [];
+        for (let i = 0; i < NODE_COUNT; i++) {
+          nodes.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.35,
+            vy: (Math.random() - 0.5) * 0.35,
+            r: Math.random() * 2 + 1.5,
+            pulse: Math.random() * Math.PI * 2,
+            pulseSpeed: 0.01 + Math.random() * 0.02
+          });
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Draw connections
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < MAX_DIST) {
+              const opacity = (1 - dist / MAX_DIST) * 0.22;
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(${ACCENT}, ${opacity})`;
+              ctx.lineWidth = 0.6;
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Draw nodes
+        nodes.forEach(node => {
+          node.pulse += node.pulseSpeed;
+          const glow = 0.6 + Math.sin(node.pulse) * 0.4;
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${ACCENT}, ${0.5 * glow})`;
+          ctx.shadowColor = `rgba(${ACCENT}, 0.3)`;
+          ctx.shadowBlur = 12 * glow;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // Outer ring for some nodes
+          if (node.r > 2.5) {
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.r + 3, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(${ACCENT}, ${0.12 * glow})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        });
+
+        // Move nodes
+        nodes.forEach(node => {
+          node.x += node.vx;
+          node.y += node.vy;
+          if (node.x < -20) node.x = width + 20;
+          if (node.x > width + 20) node.x = -20;
+          if (node.y < -20) node.y = height + 20;
+          if (node.y > height + 20) node.y = -20;
+        });
+
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      draw();
+    })();
+  </script>
+</body>
+</html>
 
