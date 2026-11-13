@@ -31,7 +31,195 @@
 
   <!-- Font Awesome 6 (Free) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- ========== LEGAL WARNING TICKER ========== -->
+<div class="legal-ticker" id="legalTicker">
+  <div class="ticker-track">
+    <!-- Duplicate the content twice for seamless loop -->
+    <span class="ticker-item">
+      <i class="fas fa-exclamation-triangle"></i>
+      PROTOXIT does not ask for any money or investment from any individual. We are a purely proprietary trading firm and bootstrapped. If anybody asks you for money, do not give it. We do not take any deposits from anybody.
+    </span>
+    <span class="ticker-sep">•</span>
+    <span class="ticker-item">
+      <i class="fas fa-shield-alt"></i>
+      Beware of fraudsters. We do not use Telegram or any other social media. Do not give any money on our name.
+    </span>
+    <span class="ticker-sep">•</span>
+    <span class="ticker-item">
+      <i class="fas fa-envelope"></i>
+      For job and business inquiries, please use our official email ID with @protoxit.com.
+    </span>
+    <span class="ticker-sep">•</span>
+    <!-- Duplicate set for seamless loop -->
+    <span class="ticker-item">
+      <i class="fas fa-exclamation-triangle"></i>
+      PROTOXIT does not ask for any money or investment from any individual. We are a purely proprietary trading firm and bootstrapped. If anybody asks you for money, do not give it. We do not take any deposits from anybody.
+    </span>
+    <span class="ticker-sep">•</span>
+    <span class="ticker-item">
+      <i class="fas fa-shield-alt"></i>
+      Beware of fraudsters. We do not use Telegram or any other social media. Do not give any money on our name.
+    </span>
+    <span class="ticker-sep">•</span>
+    <span class="ticker-item">
+      <i class="fas fa-envelope"></i>
+      For job and business inquiries, please use our official email ID with @protoxit.com.
+    </span>
+    <span class="ticker-sep">•</span>
+  </div>
+</div>
+  <style>
+  /* ========== LEGAL WARNING TICKER STYLES ========== */
+.legal-ticker {
+  background: #ffffff;
+  border-top: 2px solid var(--border-light);
+  border-bottom: 2px solid var(--border-light);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  z-index: 99;
+  /* Optional: subtle shadow for depth */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
 
+.legal-ticker::before,
+.legal-ticker::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 40px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.legal-ticker::before {
+  left: 0;
+  background: linear-gradient(to right, #ffffff 20%, transparent);
+}
+
+.legal-ticker::after {
+  right: 0;
+  background: linear-gradient(to left, #ffffff 20%, transparent);
+}
+
+.ticker-track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  animation: tickerScroll 60s linear infinite;
+  gap: 0;
+  padding-left: 100%;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes tickerScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #e83e8c; /* pink accent for urgency */
+  letter-spacing: 0.01em;
+  padding: 0 1.2rem;
+  line-height: 1.3;
+}
+
+.ticker-item i {
+  font-size: 0.8rem;
+  color: #e83e8c;
+  flex-shrink: 0;
+}
+
+.ticker-item:nth-child(3n+2) {
+  color: #0066cc;
+}
+
+.ticker-item:nth-child(3n+2) i {
+  color: #0066cc;
+}
+
+.ticker-item:nth-child(3n+3) {
+  color: #00a86b;
+}
+
+.ticker-item:nth-child(3n+3) i {
+  color: #00a86b;
+}
+
+.ticker-sep {
+  display: inline-block;
+  color: #cbd5e1;
+  font-size: 1.2rem;
+  padding: 0 0.25rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .legal-ticker {
+    height: 40px;
+  }
+
+  .ticker-item {
+    font-size: 0.72rem;
+    padding: 0 0.9rem;
+    gap: 0.4rem;
+  }
+
+  .ticker-item i {
+    font-size: 0.7rem;
+  }
+
+  .ticker-track {
+    animation-duration: 45s;
+  }
+
+  .legal-ticker::before,
+  .legal-ticker::after {
+    width: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .legal-ticker {
+    height: 38px;
+  }
+
+  .ticker-item {
+    font-size: 0.65rem;
+    padding: 0 0.7rem;
+    gap: 0.35rem;
+  }
+
+  .ticker-item i {
+    font-size: 0.65rem;
+  }
+
+  .ticker-track {
+    animation-duration: 35s;
+  }
+}
+    </style>
+
+  
   <style>
     /* ========== VIVID PROFESSIONAL PALETTE ========== */
     :root {
